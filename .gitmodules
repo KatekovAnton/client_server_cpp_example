@@ -1,0 +1,6 @@
+[submodule "third_party/anyoption"]
+	path = third_party/anyoption
+	url = https://github.com/KatekovAnton/AnyOption.git
+[submodule "third_party/poco"]
+	path = third_party/poco
+	url = https://github.com/pocoproject/poco.git
