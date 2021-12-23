@@ -40,8 +40,11 @@ int main(int argc, char *argv[])
         return 0;
     }
     
-    
-    HTTPClientSession cs("localhost",9980);
+    std::string target = "10.0.3.2";
+#if defined TARGET_HOST 
+    target = "localhost";
+#endif
+    HTTPClientSession cs(target, 9980);
     HTTPRequest request(HTTPRequest::HTTP_GET, "/?encoding=text",HTTPMessage::HTTP_1_1);
     request.setHost("localhost");
     HTTPResponse response;

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5.1)
 set(CMAKE_CXX_STANDARD 17)
-set(PROJECT_NAME Client)
-set(TARGET_NAME ${PROJECT_NAME})
+set(PROJECT_NAME_HOST ClientHost)
+set(PROJECT_NAME_NET ClientNet)
 
 
 
@@ -17,7 +17,8 @@ ENDIF (UNIX AND NOT APPLE)
 
 
 
-project(${PROJECT_NAME} C CXX)
+project(${PROJECT_NAME_HOST} C CXX)
+project(${PROJECT_NAME_NET} C CXX)
 
 
 
@@ -35,30 +36,24 @@ file(GLOB_RECURSE PROJECT_SOURCES
 if(CMAKE_GENERATOR STREQUAL Xcode)
 
     set(CMAKE_OSX_DEPLOYMENT_TARGET "10.14")
-    add_executable(${PROJECT_NAME} 
+    
+    add_executable(${PROJECT_NAME_HOST} 
         ${PROJECT_SOURCES})
 
-elseif(PROJECT_OS_MACOS)
-
-    set(CMAKE_OSX_DEPLOYMENT_TARGET "10.14")
-    add_executable(${PROJECT_NAME} MACOSX_BUNDLE 
+    add_executable(${PROJECT_NAME_NET} 
         ${PROJECT_SOURCES})
-
-    add_custom_command(TARGET ${PROJECT_NAME} 
-        POST_BUILD COMMAND 
-        ${CMAKE_INSTALL_NAME_TOOL} -add_rpath "@executable_path/../../Frameworks/"
-        $<TARGET_FILE:${PROJECT_NAME}>)
-
-elseif(WIN32)
-
-    add_executable(${PROJECT_NAME} WIN32 
-        ${PROJECT_SOURCES})
-        
+ 
 else ()
 
-    add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
+    add_executable(${PROJECT_NAME_HOST} ${PROJECT_SOURCES})
+
+    add_executable(${PROJECT_NAME_NET} ${PROJECT_SOURCES})
     
 endif()
+
+
+
+target_compile_definitions(${PROJECT_NAME_HOST} PRIVATE TARGET_HOST)
 
 
 
@@ -66,10 +61,16 @@ if (PROJECT_OS_MACOS)
 
     list(APPEND SRE_INCLUDE_DIRS /System/Library/Frameworks)
     
-    target_link_libraries(${PROJECT_NAME} "-framework Cocoa")
-    target_link_libraries(${PROJECT_NAME} "-lc")
+    target_link_libraries(${PROJECT_NAME_HOST} "-framework Cocoa")
+    target_link_libraries(${PROJECT_NAME_HOST} "-lc")
+
+    target_link_libraries(${PROJECT_NAME_NET} "-framework Cocoa")
+    target_link_libraries(${PROJECT_NAME_NET} "-lc")
     
 endif()
 
-target_link_libraries(${PROJECT_NAME} anyoption)
-target_link_libraries(${PROJECT_NAME} Poco::Net Poco::Util Poco::JSON)
+target_link_libraries(${PROJECT_NAME_HOST} anyoption)
+target_link_libraries(${PROJECT_NAME_HOST} Poco::Net Poco::Util Poco::JSON)
+
+target_link_libraries(${PROJECT_NAME_NET} anyoption)
+target_link_libraries(${PROJECT_NAME_NET} Poco::Net Poco::Util Poco::JSON)
