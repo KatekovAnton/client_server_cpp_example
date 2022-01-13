@@ -34,7 +34,7 @@ rebuild_internal:
 .PHONY: build_client_internal
 build_client_internal:
 	cd build && \
-	cmake --build . --target ClientHost ClientNet
+	cmake --build . --target Server ClientHost ClientNet
 
 
 # public
@@ -54,6 +54,10 @@ build_client:
 .PHONY: run_server_host
 run_server_host:
 	docker run -v $(ROOT_DIR):$(ROOT_DIR) --rm --workdir $(ROOT_DIR) --network host clientserverruntime ./build/Server/Server
+
+.PHONY: run_server
+run_server:
+	docker run -v $(ROOT_DIR):$(ROOT_DIR) --rm --workdir $(ROOT_DIR) -p 9980:9980 --network host clientserverruntime ./build/Server/Server
 
 .PHONY: run_client_host
 run_client_host:
